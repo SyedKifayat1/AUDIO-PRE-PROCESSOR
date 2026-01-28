@@ -1,0 +1,22 @@
+// Calculated Coefficients for Fs=48000Hz, Taps=5
+// Mode 0: Bass (Low Pass < 1kHz)
+coeff[0] = 16'sd1160;
+coeff[1] = 16'sd7894;
+coeff[2] = 16'sd14661;
+coeff[3] = 16'sd7894;
+coeff[4] = 16'sd1160;
+
+// Mode 1: Treble (High Pass > 4kHz)
+coeff[0] = -16'sd368;
+coeff[1] = -16'sd2864;
+coeff[2] = 16'sd27774;
+coeff[3] = -16'sd2864;
+coeff[4] = -16'sd368;
+
+// Mode 2: Bandpass (1kHz - 4kHz)
+coeff[0] = -16'sd210;
+coeff[1] = -16'sd1468;
+coeff[2] = 16'sd30252;
+coeff[3] = -16'sd1468;
+coeff[4] = -16'sd210;
+

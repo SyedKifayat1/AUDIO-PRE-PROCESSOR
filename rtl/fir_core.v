@@ -2,6 +2,7 @@
 module fir_core (
     input clk,
     input rst,
+    input [1:0] filter_sel, // 00: Bass, 01: Treble, 10: Bandpass
     input signed [15:0] x_in,
     output reg signed [31:0] y_out
 );
@@ -12,13 +13,39 @@ reg signed [15:0] coeff [0:TAPS-1];
 reg signed [15:0] shift [0:TAPS-1];
 integer i;
 
-initial begin
-    // Corrected Signed Decimal Syntax: -Width'sdValue
-    coeff[0] = 16'sd2000;   // Soft Bass
-    coeff[1] = 16'sd6000;   // Lower-Mid
-    coeff[2] = 16'sd10000;  // Center (Voice Clarity)
-    coeff[3] = 16'sd6000;   // Lower-Mid
-    coeff[4] = 16'sd2000;   // Soft Bass
+// Calculated Coefficients for Fs=48000Hz, Taps=5
+
+always @(*) begin
+    case (filter_sel)
+        2'b00: begin // Bass / Low Pass (< 1kHz)
+            coeff[0] = 16'sd1160;
+            coeff[1] = 16'sd7894;
+            coeff[2] = 16'sd14661;
+            coeff[3] = 16'sd7894;
+            coeff[4] = 16'sd1160;
+        end
+        2'b01: begin // Treble / High Pass (> 4kHz)
+            coeff[0] = -16'sd368;
+            coeff[1] = -16'sd2864;
+            coeff[2] = 16'sd27774;
+            coeff[3] = -16'sd2864;
+            coeff[4] = -16'sd368;
+        end
+        2'b10: begin // Bandpass (Mid/High Boost > 2kHz)
+            coeff[0] = -16'sd210;
+            coeff[1] = -16'sd1468;
+            coeff[2] = 16'sd30252;
+            coeff[3] = -16'sd1468;
+            coeff[4] = -16'sd210;
+        end
+        default: begin // Default to Bass
+            coeff[0] = 16'sd1160;
+            coeff[1] = 16'sd7894;
+            coeff[2] = 16'sd14661;
+            coeff[3] = 16'sd7894;
+            coeff[4] = 16'sd1160;
+        end
+    endcase
 end
 
 always @(posedge clk) begin

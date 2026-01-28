@@ -1,7 +1,7 @@
-`timescale 1ns / 1ps
 module audio_preprocessor (
     input clk,
     input rst,
+    input [1:0] filter_sel,
     input signed [15:0] audio_in,
     output signed [15:0] audio_out
 );
@@ -18,6 +18,7 @@ input_buffer u_buf (
 
 fir_core u_fir (
     .clk(clk), .rst(rst),
+    .filter_sel(filter_sel),
     .x_in(buffered), .y_out(fir_out)
 );
 

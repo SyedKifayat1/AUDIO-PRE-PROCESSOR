@@ -1,11 +1,29 @@
 import numpy as np
 import soundfile as sf
+import os
 from scipy.signal import firwin
+
+# Get directory of THIS script
+script_dir = os.path.dirname(os.path.abspath(__file__))
+# Resolving input path relative to script
+input_wav_path = os.path.join(script_dir, "voice.wav")
+output_txt_path = os.path.join(os.path.dirname(script_dir), "tb", "audio_input.txt")
+config_fs_path = os.path.join(script_dir, "config_fs.txt")
 
 # ===============================
 # 1. Load audio file
 # ===============================
-audio, fs = sf.read("input.wav")
+try:
+    audio, fs = sf.read(input_wav_path)
+    print(f"Detected Sample Rate: {fs} Hz")
+
+    # Save FS for recover_audio.py
+    with open(config_fs_path, "w") as f:
+        f.write(str(fs))
+except Exception as e:
+    print(f"Error loading {input_wav_path}: {e}")
+    exit(1)
+
 
 if audio.ndim > 1:
     audio = np.mean(audio, axis=1)
@@ -13,11 +31,10 @@ if audio.ndim > 1:
 # ===============================
 # 2. Add noise & Apply Stronger Gain
 # ===============================
-noise = 0.01 * np.random.randn(len(audio)) 
-noisy = audio + noise
-# Increase gain to 1.8 for "Louder" signal. 
-# Your Verilog Saturation logic will handle any peaks.
-gain = 1.8 
+# noise = 0.01 * np.random.randn(len(audio)) 
+noisy = audio # + noise
+# Reduce gain to 0.9 to prevent clipping (1.8 was too high)
+gain = 0.9 
 amplified = noisy * gain
 
 # ===============================
@@ -43,7 +60,9 @@ print("-----------------------------------------------")
 # We send the RAW amplified audio to the FPGA. 
 # The FPGA will perform the Filtering and Echo.
 fixed_input = np.clip(amplified * 32767, -32768, 32767).astype(np.int16)
-np.savetxt("../tb/audio_input.txt", fixed_input, fmt="%d")
+
+# Use robust path
+np.savetxt(output_txt_path, fixed_input, fmt="%d")
 
 print(f"\naudio_input.txt generated. Samples: {len(fixed_input)}")
 print("Note: The FPGA will now add the Bass boost and Echo effect.")

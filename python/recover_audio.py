@@ -1,13 +1,28 @@
 import numpy as np
 import soundfile as sf
 import matplotlib.pyplot as plt
+import os
+
+# Get directory of THIS script
+script_dir = os.path.dirname(os.path.abspath(__file__))
+# Resolving relative paths
+config_fs_path = os.path.join(script_dir, "config_fs.txt")
+vivado_output_path = os.path.join(os.path.dirname(script_dir), "output", "vivado_output.txt")
+output_wav_path = os.path.join(os.path.dirname(script_dir), "output", "recovered_audio.wav")
 
 # ===============================
 # 1. Configuration
 # ===============================
-SAMPLE_RATE = 44100 
-INPUT_PATH = "E:/GitHub Data/AUDIO-PRE-PROCESSOR/output/vivado_output.txt"
-OUTPUT_WAV = "E:/GitHub Data/AUDIO-PRE-PROCESSOR/output/recovered_audio.wav"
+try:
+    with open(config_fs_path, "r") as f:
+        SAMPLE_RATE = int(f.read().strip())
+        print(f"Using Detected Sample Rate: {SAMPLE_RATE} Hz")
+except:
+    SAMPLE_RATE = 44100 # Default fallback
+    print(f"Warning: {config_fs_path} not found. Defaulting to 44100 Hz")
+
+INPUT_PATH = vivado_output_path
+OUTPUT_WAV = output_wav_path
 
 try:
     # ===============================
