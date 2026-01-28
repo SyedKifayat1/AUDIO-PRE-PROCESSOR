@@ -17,19 +17,19 @@ integer i;
 
 always @(*) begin
     case (filter_sel)
-        2'b00: begin // Bass / Low Pass (< 1kHz)
-            coeff[0] = 16'sd1160;
-            coeff[1] = 16'sd7894;
-            coeff[2] = 16'sd14661;
-            coeff[3] = 16'sd7894;
-            coeff[4] = 16'sd1160;
+        2'b00: begin // Aggressive Bass (Cutoff < 300Hz)
+            coeff[0] = 16'sd1169;
+            coeff[1] = 16'sd7899;
+            coeff[2] = 16'sd14631;
+            coeff[3] = 16'sd7899;
+            coeff[4] = 16'sd1169;
         end
-        2'b01: begin // Treble / High Pass (> 4kHz)
-            coeff[0] = -16'sd368;
-            coeff[1] = -16'sd2864;
-            coeff[2] = 16'sd27774;
-            coeff[3] = -16'sd2864;
-            coeff[4] = -16'sd368;
+        2'b01: begin // Aggressive Treble (Cutoff > 6000Hz)
+            coeff[0] = -16'sd431;
+            coeff[1] = -16'sd4116;
+            coeff[2] = 16'sd25398;
+            coeff[3] = -16'sd4116;
+            coeff[4] = -16'sd431;
         end
         2'b10: begin // Bandpass (Mid/High Boost > 2kHz)
             coeff[0] = -16'sd210;

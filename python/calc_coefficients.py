@@ -26,18 +26,15 @@ def print_verilog(name, coeffs):
 fs = 48000 # Standard Audio
 taps = 5
 
-# 1. Bass (Low Pass) - Cutoff 400Hz
-# 5 taps is very short for a sharp filter, so it will be a gentle slope
-bass_coeffs = firwin(taps, cutoff=1000, fs=fs, pass_zero=True)
+# 1. Aggressive Bass (Low Pass) - Cutoff 300Hz (Muffled)
+bass_coeffs = firwin(taps, cutoff=300, fs=fs, pass_zero=True)
 bass_fixed = to_fixed_point(bass_coeffs)
 
-# 2. Treble (High Pass) - Cutoff 2000Hz
-# firwin with pass_zero=False for High Pass
-treble_coeffs = firwin(taps, cutoff=4000, fs=fs, pass_zero=False)
+# 2. Aggressive Treble (High Pass) - Cutoff 6000Hz (Tinny/Thin)
+treble_coeffs = firwin(taps, cutoff=6000, fs=fs, pass_zero=False)
 treble_fixed = to_fixed_point(treble_coeffs)
 
 # 3. Bandpass (Mid) - Focus on 2kHz center
-# With only 5 taps, a narrow 1k-4k bandpass is hard.
 # We will design a "Mid High" filter (High Pass > 1kHz) to ensure it blocks Bass.
 mid_coeffs = firwin(taps, cutoff=2000, fs=fs, pass_zero=False)
 mid_fixed = to_fixed_point(mid_coeffs)
