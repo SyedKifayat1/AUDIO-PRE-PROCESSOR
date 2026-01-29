@@ -38,6 +38,10 @@ def main():
     print("----------------------------------------")
     print("Step 3: Recovering Output Audio...")
     os.system("python python/recover_audio.py")
+
+    print("----------------------------------------")
+    print("Step 4: Visualizing Results...")
+    os.system("python python/compare_audio.py")
     
     print("\n========================================")
     print("Done! Check 'output/recovered_audio.wav'")

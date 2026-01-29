@@ -64,5 +64,10 @@ fixed_input = np.clip(amplified * 32767, -32768, 32767).astype(np.int16)
 # Use robust path
 np.savetxt(output_txt_path, fixed_input, fmt="%d")
 
+# Save the actual used audio as input.wav for the comparison script
+input_wav_out_path = os.path.join(script_dir, "input.wav")
+sf.write(input_wav_out_path, amplified, fs)
+print(f"DEBUG: Saved {input_wav_out_path} for comparison.")
+
 print(f"\naudio_input.txt generated. Samples: {len(fixed_input)}")
 print("Note: The FPGA will now add the Bass boost and Echo effect.")
